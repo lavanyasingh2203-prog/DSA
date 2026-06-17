@@ -12,7 +12,7 @@ Searching Algorithms
 
 #Getting Started
 
-To run the code examples, ensure you have Python (or the language of your choice) installed. Each solution is organized by topic, and I’ve added comments for better understanding.
+To run the code examples, ensure you have C programming language installed. Each solution is organized by topic, and I’ve added comments for better understanding.
 
 #How to Contribute
 
