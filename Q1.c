@@ -1,77 +1,69 @@
-// write a c program to implement a stack data structure using an array. The program should support the following operations:
-// 1. Push
-// 2. Pop
+// Enqueue, dequeue and display using arrays [static memory allocation].
 
 #include <stdio.h>
-#define MAX 5
+#include <stdlib.h>
 
-int stack[MAX];
-int top = -1;
+#define MAX 6
 
-// Push operation
-void push(int value) {
-    if (top == MAX - 1) {
-        printf("Stack Overflow\n");
-    } else {
-        top++;
-        stack[top] = value;
-        printf("%d pushed into stack\n", value);
+int queue[MAX];
+int rear = -1;
+int front = -1;
+
+//ENQUEUE
+void enqueue(int value)
+{
+    if (rear == MAX - 1) {
+        printf("Queue Overflow\n");
+        return;
     }
+
+    if (front == -1)
+        front = rear = 0;
+    else
+        rear = rear + 1;
+
+    queue[rear] = value;
+    printf("Enqueued %d\n", value);
 }
 
-// Pop operation
-void pop() {
-    if (top == -1) {
-        printf("Stack Underflow\n");
-    } else {
-        printf("%d popped from stack\n", stack[top]);
-        top--;
+//DEQUEUE
+void dequeue()
+{
+    if (front == -1 || front > rear) {
+        printf("Queue Underflow\n");
+        return;
     }
+    printf("Dequeued %d\n", queue[front]);
+    front = front + 1;
+
+    if (front > rear)
+        front = rear = -1;
 }
 
-// Display operation
-void display() {
-    int i;
-    if (top == -1) {
-        printf("Stack is empty\n");
-    } else {
-        printf("Stack elements are:\n");
-        for (i = top; i >= 0; i--) {
-            printf("%d\n", stack[i]);
-        }
+//DISPLAY
+void display()
+{
+    if (front == -1 || front > rear) {
+        printf("Queue is Empty\n");
+        return;
     }
+
+    printf("Queue elements are: ");
+    for (int i = front; i <= rear; i++) {
+        printf("%d ", queue[i]);
+    }
+    printf("\n");
 }
 
-// Main function
-int main() {
-    int choice, value;
+int main()
+{
+    enqueue(10);
+    enqueue(20);
+    enqueue(30);
 
-    while (1) {
-        printf("\n--- Stack Menu ---\n");
-        printf("1. Push\n");
-        printf("2. Pop\n");
-        printf("3. Display\n");
-        printf("4. Exit\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
+    dequeue();
+    dequeue();
 
-        if (choice == 1) {
-            printf("Enter value: ");
-            scanf("%d", &value);
-            push(value);
-        }
-        else if (choice == 2) {
-            pop();
-        }
-        else if (choice == 3) {
-            display();
-        }
-        else if (choice == 4) {
-            break;
-        }
-        else {
-            printf("Invalid choice\n");
-        }
-    }
+    display();
     return 0;
 }

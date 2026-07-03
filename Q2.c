@@ -1,124 +1,88 @@
-//write a c program to implement a stack data structure using linked list. The program should support the following operations:
+// WAP for queue in c using linked list [dynamic memory allocation].
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_SIZE 50     // Define the maximum capacity of the stack
-
-struct Node {
+// Define node structure
+struct node {
     int data;
-    struct Node* next;
+    struct node* next;
 };
 
-struct Node* top = NULL;    // Global variables to track the stack 
-int current_size = 0;
+struct node* front = NULL;
+struct node* rear = NULL;
 
-void push(int value);
-int pop();
-int peek();
-void display();
-int isFull();
-int isEmpty();
+// ENQUEUE (Insert at rear)
+void enqueue(int value)
+{
+    struct node* newNode = (struct node*)malloc(sizeof(struct node));
 
-int main() {
-    int choice, value;
-
-    printf("--- Stack Linked List Implementation (Max Size: %d) ---\n", MAX_SIZE);
-
-    while (1) {
-        printf("\n1. Push\n2. Pop\n3. Peek\n4. Display\n5. Exit\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
-
-        switch (choice) {
-            case 1:
-                printf("Enter value to push: ");
-                scanf("%d", &value);
-                push(value);
-                break;
-            case 2:
-                value = pop();
-                if (value != -1) printf("Popped: %d\n", value);
-                break;
-            case 3:
-                value = peek();
-                if (value != -1) printf("Top element: %d\n", value);
-                break;
-            case 4:
-                display();
-                break;
-            case 5:
-                exit(0);
-            default:
-                printf("Invalid choice! Please try again.\n");
-        }
-    }
-    return 0;
-}
-
-int isFull() {
-    return current_size >= MAX_SIZE;
-}
-
-int isEmpty() {
-    return top == NULL;
-}
-
-void push(int value) {
-    if (isFull()) {
-        printf("Stack Overflow! Cannot push %d.\n", value);
-        return;
-    }
-
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    if (!newNode) {
-        printf("Memory allocation failed!\n");
+    if (newNode == NULL) {
+        printf("Memory Overflow\n");
         return;
     }
 
     newNode->data = value;
-    newNode->next = top;
-    top = newNode;
-    current_size++;
-    printf("%d pushed to stack.\n", value);
-}
+    newNode->next = NULL;
 
-int pop() {
-    if (isEmpty()) {
-        printf("Stack Underflow! The stack is empty.\n");
-        return -1;
+    if (rear == NULL) {   // If queue is empty
+        front = rear = newNode;
+    } else {
+        rear->next = newNode;
+        rear = newNode;
     }
 
-    struct Node* temp = top;
-    int poppedValue = temp->data;
-    top = top->next;
-    free(temp);
-    current_size--;
-    return poppedValue;
+    printf("Enqueued %d\n", value);
 }
 
-// Look at the top element without removing it
-int peek() {
-    if (isEmpty()) {
-        printf("Stack is empty.\n");
-        return -1;
-    }
-    return top->data;
-}
-
-// Display all elements in the stack
-void display() {
-    if (isEmpty()) {
-        printf("Stack is empty.\n");
+// DEQUEUE (Delete from front)
+void dequeue()
+{
+    if (front == NULL) {
+        printf("Queue Underflow\n");
         return;
     }
 
-    struct Node* temp = top;
-    printf("Stack elements: ");
-    while (temp != NULL) {
-        printf("%d -> ", temp->data);
-        temp = temp->next;
-    }
-    printf("NULL\n");
+    struct node* temp = front;
+    printf("Dequeued %d\n", front->data);
+
+    front = front->next;
+
+    if (front == NULL)   // If queue becomes empty
+        rear = NULL;
+
+    free(temp);
 }
 
+// DISPLAY
+void display()
+{
+    if (front == NULL) {
+        printf("Queue is Empty\n");
+        return;
+    }
+
+    struct node* temp = front;
+
+    printf("Queue elements are: ");
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+int main()
+{
+    enqueue(10);
+    enqueue(20);
+    enqueue(30);
+
+    display();
+
+    dequeue();
+
+    display();
+
+    return 0;
+}
