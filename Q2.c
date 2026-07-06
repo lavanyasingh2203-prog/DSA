@@ -1,88 +1,91 @@
-// WAP for queue in c using linked list [dynamic memory allocation].
+// WAP to implement a binary search tree and display its preorder, inorder and postorder traversals.
 
 #include <stdio.h>
 #include <stdlib.h>
 
-// Define node structure
 struct node {
     int data;
-    struct node* next;
+    struct node* left;
+    struct node* right;
 };
 
-struct node* front = NULL;
-struct node* rear = NULL;
-
-// ENQUEUE (Insert at rear)
-void enqueue(int value)
-{
+struct node* createNode(int data) {
     struct node* newNode = (struct node*)malloc(sizeof(struct node));
 
-    if (newNode == NULL) {
-        printf("Memory Overflow\n");
-        return;
+   if (newNode == NULL) {
+        printf("Memory allocation failed\n");
+        return newNode;
+    }
+    newNode->data = data;
+    newNode-> left = NULL;
+    newNode->right = NULL;
+    return newNode;
+};
+
+struct node* insert(struct node* root, int data) {
+    if (root == NULL) {
+        return createNode(data);
     }
 
-    newNode->data = value;
-    newNode->next = NULL;
+    if (data < root->data) {
+        root->left = insert(root->left, data);
 
-    if (rear == NULL) {   // If queue is empty
-        front = rear = newNode;
-    } else {
-        rear->next = newNode;
-        rear = newNode;
+    } else if (data > root->data) {
+        root->right = insert(root->right, data);
     }
-
-    printf("Enqueued %d\n", value);
+    return root;
 }
 
-// DEQUEUE (Delete from front)
-void dequeue()
-{
-    if (front == NULL) {
-        printf("Queue Underflow\n");
+void preorder(struct node* root) {
+    if (root == NULL) {
         return;
     }
-
-    struct node* temp = front;
-    printf("Dequeued %d\n", front->data);
-
-    front = front->next;
-
-    if (front == NULL)   // If queue becomes empty
-        rear = NULL;
-
-    free(temp);
+    printf("%d ", root-> data);
+    preorder(root->left);
+    preorder(root->right);
 }
 
-// DISPLAY
-void display()
-{
-    if (front == NULL) {
-        printf("Queue is Empty\n");
+void inorder(struct node* root){
+    if (root == NULL) {
         return;
     }
+    inorder(root->left);
+    printf("%d ", root->data);
+    inorder(root -> right);
+}
 
-    struct node* temp = front;
-
-    printf("Queue elements are: ");
-    while (temp != NULL) {
-        printf("%d ", temp->data);
-        temp = temp->next;
+void postorder(struct node* root){
+    if (root == NULL) {
+        return;
     }
+    postorder(root->left);
+    postorder(root -> right);
+    printf("%d ", root -> data);
+
+}
+
+int main () {
+    struct node* root = NULL;
+    root = insert(root, 50);
+    insert(root, 30);
+    insert(root, 20);
+    insert(root, 40);
+    insert(root, 70);
+    insert(root, 60);
+    insert(root, 80);
+
+    printf("Preorder traversal: ");
+    preorder(root);
     printf("\n");
-}
 
-int main()
-{
-    enqueue(10);
-    enqueue(20);
-    enqueue(30);
+    printf("Inorder traversal: ");
+    inorder(root);
+    printf("\n");
 
-    display();
-
-    dequeue();
-
-    display();
+    printf("Postorder traversal: ");
+    postorder(root);
+    printf("\n");
 
     return 0;
 }
+

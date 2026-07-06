@@ -1,69 +1,75 @@
-// Enqueue, dequeue and display using arrays [static memory allocation].
+// Wap to implement a binary tree and display its preorder, inorder and postorder traversals.
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX 6
+struct node {
+    int data;
+    struct node* left;
+    struct node* right;
+};
 
-int queue[MAX];
-int rear = -1;
-int front = -1;
+ struct node* createNode(int data) {
+    struct node* newNode = (struct node*)malloc(sizeof(struct node));
 
-//ENQUEUE
-void enqueue(int value)
-{
-    if (rear == MAX - 1) {
-        printf("Queue Overflow\n");
-        return;
+   if (newNode == NULL) {
+        printf("Memory allocation failed\n");
+        return newNode;
     }
 
-    if (front == -1)
-        front = rear = 0;
-    else
-        rear = rear + 1;
+    newNode->data = data;
+    newNode-> left = NULL;
+    newNode->right = NULL;
+    return newNode;
+};
 
-    queue[rear] = value;
-    printf("Enqueued %d\n", value);
+void preorder(struct node* root) {
+    if (root == NULL) {
+        return;
+    }
+    printf("%d ", root-> data);
+    preorder(root->left);
+    preorder(root->right);
 }
 
-//DEQUEUE
-void dequeue()
-{
-    if (front == -1 || front > rear) {
-        printf("Queue Underflow\n");
+void inorder(struct node* root){
+    if (root == NULL) {
         return;
     }
-    printf("Dequeued %d\n", queue[front]);
-    front = front + 1;
-
-    if (front > rear)
-        front = rear = -1;
+    inorder(root->left);
+    printf("%d ", root->data);
+    inorder(root -> right);
 }
 
-//DISPLAY
-void display()
-{
-    if (front == -1 || front > rear) {
-        printf("Queue is Empty\n");
+void postorder(struct node* root){
+    if (root == NULL) {
         return;
     }
+    postorder(root->left);
+    postorder(root -> right);
+    printf("%d ", root -> data);
 
-    printf("Queue elements are: ");
-    for (int i = front; i <= rear; i++) {
-        printf("%d ", queue[i]);
-    }
+}
+
+int main () {
+    struct node* root = createNode('A');
+    root->left = createNode('B');
+    root->right = createNode('D');
+    root->left->right = createNode('C');
+    root->right->left = createNode('E');
+    root->right->left->left = createNode('F');
+
+    printf("Preorder traversal: ");
+    preorder(root);
     printf("\n");
-}
 
-int main()
-{
-    enqueue(10);
-    enqueue(20);
-    enqueue(30);
+    printf("Inorder traversal: ");
+    inorder(root);
+    printf("\n");
 
-    dequeue();
-    dequeue();
+    printf("Postorder traversal: ");
+    postorder(root);
+    printf("\n");
 
-    display();
     return 0;
 }
