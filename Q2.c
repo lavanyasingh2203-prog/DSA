@@ -1,91 +1,78 @@
-// WAP to implement a binary search tree and display its preorder, inorder and postorder traversals.
+// A Text Editor stores user actions such as type, delete, copy, paste. Write a C program using a stack to:
+// 1. Push a new action onto the stack.
+// 2. If the entered action is "undo" , remove the most recent action instead of storing "undo".
+// 3. If the same action is entered twice, store it only once.
+// 4. Display all the actions currently present in the stack.
+// 5. Display the total number od stored actions and the topmost action.
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 
-struct node {
-    int data;
-    struct node* left;
-    struct node* right;
-};
+#define MAX 50
 
-struct node* createNode(int data) {
-    struct node* newNode = (struct node*)malloc(sizeof(struct node));
+char stack[MAX][20];
+int top = -1;
 
-   if (newNode == NULL) {
-        printf("Memory allocation failed\n");
-        return newNode;
+// Function to check duplicate
+int isDuplicate(char action[]) {
+    for (int i = 0; i <= top; i++) {
+        if (strcmp(stack[i], action) == 0) {
+            return 1; // duplicate found
+        }
     }
-    newNode->data = data;
-    newNode-> left = NULL;
-    newNode->right = NULL;
-    return newNode;
-};
-
-struct node* insert(struct node* root, int data) {
-    if (root == NULL) {
-        return createNode(data);
-    }
-
-    if (data < root->data) {
-        root->left = insert(root->left, data);
-
-    } else if (data > root->data) {
-        root->right = insert(root->right, data);
-    }
-    return root;
-}
-
-void preorder(struct node* root) {
-    if (root == NULL) {
-        return;
-    }
-    printf("%d ", root-> data);
-    preorder(root->left);
-    preorder(root->right);
-}
-
-void inorder(struct node* root){
-    if (root == NULL) {
-        return;
-    }
-    inorder(root->left);
-    printf("%d ", root->data);
-    inorder(root -> right);
-}
-
-void postorder(struct node* root){
-    if (root == NULL) {
-        return;
-    }
-    postorder(root->left);
-    postorder(root -> right);
-    printf("%d ", root -> data);
-
-}
-
-int main () {
-    struct node* root = NULL;
-    root = insert(root, 50);
-    insert(root, 30);
-    insert(root, 20);
-    insert(root, 40);
-    insert(root, 70);
-    insert(root, 60);
-    insert(root, 80);
-
-    printf("Preorder traversal: ");
-    preorder(root);
-    printf("\n");
-
-    printf("Inorder traversal: ");
-    inorder(root);
-    printf("\n");
-
-    printf("Postorder traversal: ");
-    postorder(root);
-    printf("\n");
-
     return 0;
 }
 
+int main() {
+    int n;
+    char action[20];
+
+    printf("Enter number of actions: ");
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        printf("Enter action: ");
+        scanf("%s", action);
+
+        // 1 & 2: Check for undo
+        if (strcmp(action, "undo") == 0) {
+            if (top >= 0) {
+                top--;  // pop
+            } else {
+                printf("Nothing to undo!\n");
+            }
+        }
+
+        // 3: Check duplicate
+        else if (isDuplicate(action)) {
+            printf("Duplicate action ignored!\n");
+        }
+
+        // 1: Push action
+        else {
+            if (top < MAX - 1) {
+                top++;
+                strcpy(stack[top], action);
+            } else {
+                printf("Stack Overflow!\n");
+            }
+        }
+    }
+
+    // 4: Display stack
+    printf("\nActions in stack:\n");
+    for (int i = 0; i <= top; i++) {
+        printf("%s\n", stack[i]);
+    }
+
+    // 5: Total and top
+    printf("\nTotal actions: %d\n", top + 1);
+
+    if (top >= 0) {
+        printf("Topmost action: %s\n", stack[top]);
+    } else {
+        printf("Stack is empty\n");
+    }
+
+    return 0;
+}
